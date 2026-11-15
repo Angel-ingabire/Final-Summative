@@ -29,8 +29,12 @@ export function shortenAddress(address: string): string {
 }
 
 export function explainError(error: unknown): string {
-  if (typeof error === "object" && error !== null && "shortMessage" in error) {
-    return String(error.shortMessage);
+  if (typeof error === "object" && error !== null) {
+    const raw = "shortMessage" in error ? String(error.shortMessage) : "";
+    if (raw.includes("EnforcedPause") || raw.includes("paused")) {
+      return "This operation is blocked because the contract is paused. Contact an administrator.";
+    }
+    if (raw) return raw;
   }
   if (error instanceof Error) return error.message;
   return "The request failed. Check the wallet, network, and transaction details.";

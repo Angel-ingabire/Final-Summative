@@ -18,7 +18,10 @@ export const settlementAbi = [
   "function getClaimableAmount(address farmer) view returns (uint256)",
   "function claimPayment(bytes32 deliveryId)",
   "function raiseDispute(bytes32 deliveryId,string reason)",
-  "function resolveDispute(bytes32 deliveryId,bool upholdPayment)"
+  "function resolveDispute(bytes32 deliveryId,bool upholdPayment)",
+  "function pause()",
+  "function unpause()",
+  "function paused() view returns (bool)"
 ] as const;
 
 export const tokenAbi = [

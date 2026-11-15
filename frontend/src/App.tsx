@@ -72,6 +72,7 @@ function App() {
   const [isStation, setIsStation] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isResolver, setIsResolver] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [lastTransaction, setLastTransaction] = useState("");
@@ -178,7 +179,7 @@ function App() {
   const refreshDashboard = useCallback(async () => {
     if (!walletContracts || !account || !isSepolia) return;
     try {
-      const [ids, amount, balance, treasuryBalance, available, reserved, deposited, allocated] =
+      const [ids, amount, balance, treasuryBalance, available, reserved, deposited, allocated, paused] =
         await Promise.all([
           read(walletContracts.settlement, "getFarmerDeliveries", account),
           read(walletContracts.settlement, "getClaimableAmount", account),
@@ -187,7 +188,8 @@ function App() {
           read(walletContracts.settlement, "getAvailableTreasury"),
           read(walletContracts.settlement, "getReservedFunds"),
           read(walletContracts.settlement, "totalDeposited"),
-          read(walletContracts.settlement, "totalSettlements")
+          read(walletContracts.settlement, "totalSettlements"),
+          read(walletContracts.settlement, "paused")
         ]);
       const rows = await Promise.all(
         (ids as string[]).map(async (id) => {
@@ -217,6 +219,7 @@ function App() {
         deposited: deposited as bigint,
         allocated: allocated as bigint
       });
+      setIsPaused(Boolean(paused));
     } catch (error) {
       setNotice(`Unable to load current contract data: ${explainError(error)}`);
     }
@@ -282,6 +285,7 @@ function App() {
   const syncReceipts = useCallback(
     async (receipts?: QueuedReceipt[]) => {
       if (!walletContracts || !signer || !isStation || !isSepolia || !navigator.onLine) return;
+      if (isPaused) return;
       setBusy(true);
       for (const receipt of receipts ?? await listReceipts()) {
         if (receipt.status === "synchronized") continue;
@@ -333,7 +337,7 @@ function App() {
       setBusy(false);
       await refreshDashboard();
     },
-    [walletContracts, signer, isStation, isSepolia, refreshDashboard]
+    [walletContracts, signer, isStation, isSepolia, isPaused, refreshDashboard]
   );
 
   useEffect(() => {
@@ -517,6 +521,11 @@ function App() {
             </div>
           )}
           {!configured && <div className="notice notice-error mt-4">Set VITE_AMATASETTLE_ADDRESS and VITE_MOCKRWF_ADDRESS in frontend/.env.local after deploying contracts.</div>}
+          {account && isPaused && (
+            <div className="notice notice-error mt-4" role="alert">
+              <span>The contract is paused. Deliveries, deposits, claims, and withdrawals are temporarily blocked. Disputes and role management remain available.</span>
+            </div>
+          )}
           {!account && <div className="empty-panel mt-5"><p className="text-lg font-semibold">Connect MetaMask to use the live dashboards</p><p className="mt-2 text-sm text-stone-500">All workspace data is read from the configured contract; this page does not use mock delivery records.</p></div>}
 
           {account && <div className="mt-6 grid gap-5 lg:grid-cols-[1.4fr_0.8fr]">
@@ -537,7 +546,7 @@ function App() {
                         <td>{formatRwf(delivery.payment)}</td>
                         <td><span className={`state-tag state-${delivery.status}`}>{DISPUTE_LABELS[delivery.status]}</span></td>
                         <td><div className="flex gap-2">
-                          {delivery.status === 1 && <button disabled={busy || !isSepolia} className="small-action" onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "claimPayment", delivery.id)}>Claim</button>}
+                          {delivery.status === 1 && <button disabled={busy || !isSepolia || isPaused} className="small-action" onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "claimPayment", delivery.id)}>Claim</button>}
                           {delivery.status === 1 && <button disabled={busy || !isSepolia} className="small-action subtle" onClick={() => {
                             const reason = window.prompt("Briefly describe the delivery issue:");
                             if (reason && walletContracts) void runTransaction(walletContracts.settlement, "raiseDispute", delivery.id, reason);
@@ -556,15 +565,15 @@ function App() {
                   <label className="field">Milk quantity (litres)<input required type="number" min="0.001" step="0.001" value={form.litres} onChange={(event) => setForm({ ...form, litres: event.target.value })} /></label>
                   <label className="field">Price (simulated RWF / litre)<input required type="number" min="1" step="1" value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} /></label>
                   <label className="field">Quality grade (1–5)<select value={form.grade} onChange={(event) => setForm({ ...form, grade: event.target.value })}><option value="1">1 · Standard</option><option value="2">2 · Good</option><option value="3">3 · Very good</option><option value="4">4 · Excellent</option><option value="5">5 · Premium</option></select></label>
-                  <div className="field self-end"><button className="button-primary w-full" disabled={busy || !isSepolia}>Sign & save receipt</button></div>
+                  <div className="field self-end"><button className="button-primary w-full" disabled={busy || !isSepolia || isPaused}>Sign & save receipt</button></div>
                 </form>
                 <p className="mt-3 text-xs leading-5 text-stone-500">The signed message binds the receipt to this contract and chain. A signature authenticates the station key, not the physical measurement.</p>
                 <div className="mt-6 border-t border-sand pt-5">
-                  <div className="panel-heading"><h4>Local synchronization queue</h4><button className="button-text" disabled={busy || !isOnline} onClick={() => void syncReceipts()}>Sync pending</button></div>
+                  <div className="panel-heading"><h4>Local synchronization queue</h4><button className="button-text" disabled={busy || !isOnline || isPaused} onClick={() => void syncReceipts()}>Sync pending</button></div>
                   {queue.length === 0 ? <p className="mt-4 text-sm text-stone-500">No locally saved receipts.</p> : <div className="mt-3 space-y-2">{queue.map((receipt) => <div key={receipt.delivery.deliveryId} className="queue-row">
                     <div><p className="font-mono text-xs">{shortenAddress(receipt.delivery.deliveryId)}</p><p className="mt-1 text-xs text-stone-500">{new Date(receipt.createdAt).toLocaleString()}</p></div>
                     <span className={`state-tag ${receipt.status === "synchronized" ? "state-3" : receipt.status === "failed" ? "state-4" : "state-2"}`}>{receipt.status}</span>
-                    {receipt.status !== "synchronized" && <button className="button-text" disabled={busy || !isOnline} onClick={() => void syncReceipts([receipt])}>Retry</button>}
+                    {receipt.status !== "synchronized" && <button className="button-text" disabled={busy || !isOnline || isPaused} onClick={() => void syncReceipts([receipt])}>Retry</button>}
                     {receipt.transactionHash && <a className="button-text" href={`https://sepolia.etherscan.io/tx/${receipt.transactionHash}`} target="_blank" rel="noreferrer">Explorer ↗</a>}
                     {receipt.error && <p className="queue-error">{receipt.error}</p>}
                   </div>)}</div>}
@@ -585,9 +594,9 @@ function App() {
                 {isAdmin && <div className="mt-6 border-t border-sand pt-5">
                   <form onSubmit={(event) => void handleDeposit(event)} className="space-y-3">
                     <label className="field">Deposit simulated mRWF<input required type="number" min="0.000001" step="0.000001" value={depositAmount} onChange={(event) => setDepositAmount(event.target.value)} placeholder="e.g. 100000" /></label>
-                    <button className="button-primary w-full" disabled={busy || !isSepolia}>Approve & deposit</button>
+                    <button className="button-primary w-full" disabled={busy || !isSepolia || isPaused}>Approve & deposit</button>
                   </form>
-                  <button className="button-secondary mt-3 w-full" disabled={busy || !isSepolia} onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "withdrawUnallocatedFunds", account, parseUnits(depositAmount || "0", RWF_TOKEN_SCALE))}>Withdraw entered amount</button>
+                  <button className="button-secondary mt-3 w-full" disabled={busy || !isSepolia || isPaused} onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "withdrawUnallocatedFunds", account, parseUnits(depositAmount || "0", RWF_TOKEN_SCALE))}>Withdraw entered amount</button>
                   <label className="field mt-5">Authorize station wallet<input value={stationToAuthorize} onChange={(event) => setStationToAuthorize(event.target.value)} placeholder="0x…" /></label>
                   <button className="button-secondary mt-2 w-full" disabled={busy || !isSepolia || !ethers.isAddress(stationToAuthorize)} onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "authorizeStation", stationToAuthorize)}>Authorize station</button>
                   <button className="button-text mt-3" disabled={busy || !isSepolia} onClick={() => walletContracts && void runTransaction(walletContracts.token, "mint", account, parseUnits("100000", RWF_TOKEN_SCALE))}>Mint 100,000 demo mRWF to this wallet</button>
