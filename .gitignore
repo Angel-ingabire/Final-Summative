@@ -1,0 +1,14 @@
+node_modules/
+frontend/node_modules/
+frontend/dist/
+artifacts/
+cache/
+coverage/
+.env
+.env.*
+!.env.example
+deployments/*.local.json
+deployments/*.private.json
+__pycache__/
+.pytest_cache/
+*.tsbuildinfo
