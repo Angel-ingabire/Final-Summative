@@ -599,6 +599,16 @@ function App() {
                   <button className="button-secondary mt-3 w-full" disabled={busy || !isSepolia || isPaused} onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "withdrawUnallocatedFunds", account, parseUnits(depositAmount || "0", RWF_TOKEN_SCALE))}>Withdraw entered amount</button>
                   <label className="field mt-5">Authorize station wallet<input value={stationToAuthorize} onChange={(event) => setStationToAuthorize(event.target.value)} placeholder="0x…" /></label>
                   <button className="button-secondary mt-2 w-full" disabled={busy || !isSepolia || !ethers.isAddress(stationToAuthorize)} onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "authorizeStation", stationToAuthorize)}>Authorize station</button>
+                  {isPaused ? (
+                    <button className="button-secondary mt-3 w-full" disabled={busy || !isSepolia} onClick={() => walletContracts && void runTransaction(walletContracts.settlement, "unpause")}>Resume Contract</button>
+                  ) : (
+                    <button className="button-danger mt-3 w-full" disabled={busy || !isSepolia} onClick={() => {
+                      const confirmed = window.confirm(
+                        "Pause the contract? Deposits, withdrawals, delivery recording, and farmer claims will be blocked until an administrator resumes the contract. Dispute resolution and role management will remain available."
+                      );
+                      if (confirmed && walletContracts) void runTransaction(walletContracts.settlement, "pause");
+                    }}>Pause Contract</button>
+                  )}
                   <button className="button-text mt-3" disabled={busy || !isSepolia} onClick={() => walletContracts && void runTransaction(walletContracts.token, "mint", account, parseUnits("100000", RWF_TOKEN_SCALE))}>Mint 100,000 demo mRWF to this wallet</button>
                 </div>}
               </section>

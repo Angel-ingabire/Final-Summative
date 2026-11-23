@@ -31,7 +31,19 @@ Only accounts with `RESOLVER_ROLE`. That role is trusted in this prototype; prod
 No. It is an admin-mintable test ERC-20 and is not backed, redeemable, or pegged to Rwandan francs.
 
 **Has it been deployed to Sepolia?**  
-Not yet. The local contracts, tests, and deployment scripts are implemented. The student must supply a private RPC endpoint and funded testnet wallet, deploy, and record genuine explorer evidence. No address or hash in the local demo should be described as a Sepolia result.
+Yes. AmataSettle was deployed to Ethereum Sepolia (chain ID 11155111) on November 23, 2026:
+
+| Item | Value |
+|------|-------|
+| AmataSettle | [`0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6`](https://sepolia.etherscan.io/address/0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6) |
+| MockRWF | [`0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f`](https://sepolia.etherscan.io/address/0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f) |
+| Dispute period | 604,800 seconds (7 days) |
+| Deployment evidence | `deployments/sepolia.json` |
+
+Contract addresses and deployment transaction hashes are recorded in `deployments/sepolia.json`. Contract source verification on Etherscan has not been independently confirmed. No local Hardhat address or hash should be described as a Sepolia result.
+
+**What does the emergency pause do?**
+Only an administrator with `DEFAULT_ADMIN_ROLE` can pause or resume the contract. While paused, deposits, withdrawals, delivery recording, and farmer payment claims are blocked. Dispute creation, dispute resolution, and role management remain available. The paused state is read directly from the deployed contract via `paused()`, and the administrator frontend provides Pause Contract and Resume Contract buttons.
 
 ## Limitations worth mentioning
 

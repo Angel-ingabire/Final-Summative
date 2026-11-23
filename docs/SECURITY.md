@@ -3,6 +3,7 @@
 ## Implemented controls
 
 - Role separation for default administration, delivery stations, and dispute resolvers.
+- Emergency pause mechanism: only `DEFAULT_ADMIN_ROLE` may call `pause()` or `unpause()`. While paused, deposits, withdrawals, delivery recording, and farmer payment claims are blocked; dispute creation, dispute resolution, and role management remain available.
 - Station signatures use EIP-712 domain separation (contract name, version, chain ID, and verifying contract) and OpenZeppelin ECDSA recovery.
 - A station must be authorized and the submitting account must match the recovered station signer.
 - Unique delivery IDs, signature deadlines, strict input validation, and explicit status checks prevent replay and invalid transitions.

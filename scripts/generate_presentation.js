@@ -116,7 +116,7 @@ function line(slide, x1, y1, x2, y2, color = C.green) {
   slide.addShape(pptx.ShapeType.roundRect, { x: 8.75, y: 4.45, w: 3.35, h: 1.5, rectRadius: 0.1, line: { color: "FFFFFF", transparency: 80 }, fill: { color: "FFFFFF", transparency: 91 } });
   slide.addText("15.0 L   ·   7,500 mRWF", { x: 8.95, y: 4.85, w: 2.95, h: 0.35, fontSize: 17, bold: true, color: C.white, align: "center", margin: 0 });
   slide.addText("SAMPLE CALCULATION · TEST TOKEN ONLY", { x: 8.95, y: 5.32, w: 2.95, h: 0.25, fontSize: 8, charSpacing: 1, color: "C8D6C8", align: "center", margin: 0 });
-  slide.addText("ACADEMIC PROTOTYPE   /   SEPOLIA DEPLOYMENT PENDING", { x: 0.84, y: 6.7, w: 7.7, h: 0.25, fontSize: 10, bold: true, charSpacing: 1, color: "B7CBB6", margin: 0 });
+  slide.addText("ACADEMIC PROTOTYPE   /   SEPOLIA DEPLOYED", { x: 0.84, y: 6.7, w: 7.7, h: 0.25, fontSize: 10, bold: true, charSpacing: 1, color: "B7CBB6", margin: 0 });
 }
 
 // 2 — problem
@@ -256,12 +256,12 @@ function line(slide, x1, y1, x2, y2, color = C.green) {
 // 13 — testing
 {
   const slide = pptx.addSlide("CONTENT");
-  title(slide, "Validation", "Local checks passed; Sepolia deployment is still pending");
-  slide.addText("25 / 25", { x: 1.0, y: 2.35, w: 4.4, h: 1.0, fontSize: 46, bold: true, color: C.green, align: "center", margin: 0 });
+  title(slide, "Validation", "38 Hardhat tests pass; frontend production build succeeds");
+  slide.addText("38 / 38", { x: 1.0, y: 2.35, w: 4.4, h: 1.0, fontSize: 46, bold: true, color: C.green, align: "center", margin: 0 });
   slide.addText("Hardhat tests passing", { x: 1.0, y: 3.35, w: 4.4, h: 0.35, fontSize: 16, color: C.muted, align: "center", margin: 0 });
   slide.addText("PASS", { x: 7.8, y: 2.35, w: 3.2, h: 1.0, fontSize: 44, bold: true, color: C.green, align: "center", margin: 0 });
   slide.addText("Frontend TypeScript + production build", { x: 6.8, y: 3.35, w: 5.2, h: 0.35, fontSize: 15, color: C.muted, align: "center", margin: 0 });
-  slide.addText("No Sepolia address, transaction, or screenshot is claimed. Run the deployment guide with your own testnet credentials.", { x: 1.1, y: 5.1, w: 11.1, h: 0.65, fontSize: 15, bold: true, color: C.amber, align: "center", margin: 0 });
+  slide.addText("Contracts deployed to Ethereum Sepolia (chain ID 11155111), November 23, 2026.", { x: 1.1, y: 5.1, w: 11.1, h: 0.65, fontSize: 15, bold: true, color: C.forest, align: "center", margin: 0 });
 }
 
 // 14 — limitations
@@ -272,7 +272,7 @@ function line(slide, x1, y1, x2, y2, color = C.green) {
     "mRWF is an admin-mintable test token; no real payments or redemption.",
     "Station key and resolver are trusted; measurement accuracy is off-chain.",
     "IndexedDB queue is local to one browser and may be erased.",
-    "Sepolia deployment, verified source, live wallet test, and genuine screenshots are pending.",
+    "Sepolia deployment is complete; live wallet interaction screenshots are still being captured.",
     "Next: key governance, independent audit, privacy review, recovery, and user testing."
   ], 1.0, 2.05, 11.2, 16);
 }
@@ -285,7 +285,7 @@ function line(slide, x1, y1, x2, y2, color = C.green) {
   slide.addText("A delivery record can become a verifiable financial obligation.", { x: 0.9, y: 1.65, w: 10.8, h: 1.5, fontFace: "Aptos Display", fontSize: 34, bold: true, color: C.white, breakLine: false, margin: 0 });
   slide.addText("AmataSettle combines signed receipts, reserved treasury accounting, farmer claims, dispute states, and offline synchronization—while keeping its testnet and physical-measurement limits explicit.", { x: 0.95, y: 3.65, w: 10.4, h: 1.0, fontSize: 18, color: "D9E5D8", breakLine: false, margin: 0 });
   slide.addText("QUESTIONS?", { x: 0.95, y: 5.45, w: 4.2, h: 0.5, fontSize: 23, bold: true, charSpacing: 1, color: "AFC6AA", margin: 0 });
-  slide.addText("Academic prototype · Sepolia deployment pending", { x: 0.95, y: 6.75, w: 7.5, h: 0.25, fontSize: 10, color: "B7CBB6", margin: 0 });
+  slide.addText("Academic prototype · Sepolia deployed", { x: 0.95, y: 6.75, w: 7.5, h: 0.25, fontSize: 10, color: "B7CBB6", margin: 0 });
 }
 
 await pptx.writeFile({ fileName: "AmataSettle_Presentation.pptx" });
