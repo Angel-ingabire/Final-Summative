@@ -2,7 +2,18 @@
 
 ## Current deployment status
 
-The contracts and scripts are ready for deployment, but **AmataSettle has not been deployed to Sepolia**. The repository intentionally contains no invented address, transaction hash, or screenshot. A deployment needs a funded Sepolia wallet and RPC access controlled by the student.
+AmataSettle has been deployed to Ethereum Sepolia (chain ID 11155111) on November 23, 2026. The deployed contracts and their deployment transaction hashes are recorded in `deployments/sepolia.json`:
+
+| Item | Value |
+|------|-------|
+| Deployer | `0x55D23cA45Eace7E4497C780f89eac62f61421B3E` |
+| AmataSettle | [`0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6`](https://sepolia.etherscan.io/address/0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6) |
+| MockRWF | [`0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f`](https://sepolia.etherscan.io/address/0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f) |
+| Dispute period | 604,800 seconds (7 days) |
+| MockRWF deployment tx | [`0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5`](https://sepolia.etherscan.io/tx/0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5) |
+| AmataSettle deployment tx | [`0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f`](https://sepolia.etherscan.io/tx/0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f) |
+
+Contract source verification on Etherscan has not been independently confirmed and is not claimed here.
 
 ## Prerequisites
 

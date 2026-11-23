@@ -3,14 +3,21 @@
 **Academic project report**  
 **Application areas:** Finance, Supply Chain Management, Social Impact  
 **Blockchain:** Ethereum (Sepolia deployment scripts; local Hardhat tests)  
-**Status:** Prototype implemented and locally tested; Sepolia deployment pending  
+**Status:** Prototype implemented; deployed to Ethereum Sepolia on November 23, 2026; local Hardhat tests pass
 **Mission:** To use software engineering to develop secure, accessible and reliable financial and payment systems that expand digital-finance access for underserved Rwandan communities and businesses, particularly in environments constrained by connectivity, digital literacy and financial infrastructure.
 
-> **Evidence notice:** This report does not claim that AmataSettle has been deployed on Sepolia. It includes actual local Hardhat test results only. Testnet addresses, hashes, screenshots, and real-world impact statistics have not been fabricated.
+> **Evidence notice:** AmataSettle has been deployed to Ethereum Sepolia (chain ID 11155111) on November 23, 2026. The deployed contracts and their deployment transactions are recorded in `deployments/sepolia.json`:
+>
+> - AmataSettle: [`0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6`](https://sepolia.etherscan.io/address/0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6)
+> - MockRWF: [`0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f`](https://sepolia.etherscan.io/address/0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f)
+> - MockRWF deployment transaction: [`0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5`](https://sepolia.etherscan.io/tx/0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5)
+> - AmataSettle deployment transaction: [`0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f`](https://sepolia.etherscan.io/tx/0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f)
+>
+> Contract source verification on Etherscan has not been independently confirmed and is not claimed here. Testnet addresses and deployment transaction hashes are taken from `deployments/sepolia.json`; they have not been fabricated. Real-world impact statistics remain unverified; demonstration screenshots are available in `screenshots/`.
 
 ## Abstract
 
-Smallholder dairy farmers and cooperatives need clear, verifiable delivery and settlement records. This project implements AmataSettle, an Ethereum prototype that binds a milk-delivery receipt to an authorized collection-station signature using EIP-712, verifies the receipt in a Solidity contract, and reserves simulated token funds for a farmer payment. Farmers can claim an undisputed allocation or raise a dispute within a configurable period. A station web client can sign and save receipts in browser IndexedDB while connectivity is unavailable, then retry the original signed data when connectivity returns. The implementation includes a six-decimal admin-mintable test ERC-20, treasury accounting, role separation, a React/MetaMask interface, local Hardhat tests, and Sepolia deployment scripts. The test suite passed locally, and the frontend production build succeeded. Sepolia deployment and live browser evidence remain pending because deployment requires student-controlled credentials and testnet gas. This work is a technical prototype, not a financial product; signatures cannot establish physical measurement accuracy, and the simulated token has no value or redemption.
+Smallholder dairy farmers and cooperatives need clear, verifiable delivery and settlement records. This project implements AmataSettle, an Ethereum prototype that binds a milk-delivery receipt to an authorized collection-station signature using EIP-712, verifies the receipt in a Solidity contract, and reserves simulated token funds for a farmer payment. Farmers can claim an undisputed allocation or raise a dispute within a configurable period. A station web client can sign and save receipts in browser IndexedDB while connectivity is unavailable, then retry the original signed data when connectivity returns. The implementation includes a six-decimal admin-mintable test ERC-20, treasury accounting, role separation, a React/MetaMask interface, local Hardhat tests, and Sepolia deployment scripts. The test suite passed locally (38 Hardhat tests), and the frontend production build succeeded. AmataSettle has been deployed to Ethereum Sepolia; contract addresses and deployment transaction hashes are recorded in `deployments/sepolia.json`. Demonstration screenshots are available in `screenshots/`.
 
 ## 1. Introduction and background
 
@@ -116,7 +123,9 @@ The React/TypeScript/Vite application provides a landing view and role-aware far
 
 ## 9. Security considerations
 
-Controls implemented include role checks, EIP-712 domain separation, ECDSA recovery, station-caller and recovered-signer equality, unique IDs, signature deadlines, validation of delivery attributes, SafeERC20, guarded token-moving functions, one-time state transitions, and liability-aware withdrawal caps.
+Controls implemented include role checks, EIP-712 domain separation, ECDSA recovery, station-caller and recovered-signer equality, unique IDs, signature deadlines, validation of delivery attributes, SafeERC20, guarded token-moving functions, one-time state transitions, liability-aware withdrawal caps, and an emergency pause mechanism.
+
+The contract inherits OpenZeppelin `Pausable`. Only an account with `DEFAULT_ADMIN_ROLE` may call `pause()` or `unpause()`. While paused, deposits, withdrawals, delivery recording, and farmer payment claims are blocked. Dispute creation, dispute resolution, and role management remain available. The paused state is read directly from the deployed contract via the `paused()` view function, and the administrator frontend provides Pause Contract and Resume Contract buttons.
 
 Remaining trust and risk include compromised station keys, dishonest measurement, administrator/resolver governance, public disclosure of contract data, local browser storage loss, unsupported token behavior, and the absence of an independent audit. Dispute reasons are on-chain and should not include personal or sensitive information. The demo token must never be represented as a stablecoin or real currency.
 
@@ -124,7 +133,23 @@ Remaining trust and risk include compromised station keys, dishonest measurement
 
 The repository includes Hardhat 3 configuration, Solidity 0.8.28 contracts, local tests, a local demonstration script, Sepolia deployment/setup scripts, and Vite frontend configuration. The deployer must provide a Sepolia RPC URL and private key locally in an ignored `.env`; the browser uses MetaMask and never accepts pasted private keys.
 
-**Deployment status:** Not deployed to Sepolia. The student must run `npm run deploy:sepolia` with their own testnet credentials, then `npm run setup:sepolia`, configure the frontend addresses, confirm the transactions on Sepolia Etherscan, and capture genuine screenshots. No explorer verification or deployment evidence is claimed here.
+**Deployment status:** Deployed to Ethereum Sepolia on November 23, 2026.
+
+| Item | Value |
+|------|-------|
+| Network | Ethereum Sepolia (chain ID 11155111) |
+| Deployer | `0x55D23cA45Eace7E4497C780f89eac62f61421B3E` |
+| AmataSettle | [`0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6`](https://sepolia.etherscan.io/address/0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6) |
+| MockRWF | [`0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f`](https://sepolia.etherscan.io/address/0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f) |
+| Dispute period | 604,800 seconds (7 days) |
+| MockRWF deployment tx | [`0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5`](https://sepolia.etherscan.io/tx/0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5) |
+| AmataSettle deployment tx | [`0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f`](https://sepolia.etherscan.io/tx/0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f) |
+
+Contract addresses and hashes are taken from `deployments/sepolia.json`. Contract source verification on Etherscan has not been independently confirmed and is not claimed here.
+
+The deployer must provide a Sepolia RPC URL and private key locally in an ignored `.env`; the browser uses MetaMask and never accepts pasted private keys.
+
+See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for precise setup and commands.
 
 See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for precise setup and commands.
 
@@ -132,7 +157,7 @@ See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for precise setup and commands.
 
 Contract tests run against Hardhat's local network and use local accounts to sign EIP-712 data. Coverage includes deployment, roles, treasury invariants, valid and invalid signatures, replay, input validation, offline-delayed submission, claims, disputes, events, and accounting through multiple transitions.
 
-**Actual result:** 25 Hardhat tests passed. `npm run build:web` also completed TypeScript project checks and a Vite production build. These checks do not prove a Sepolia deployment or a browser MetaMask integration. See [docs/TESTING.md](./docs/TESTING.md) for each case and its result.
+**Actual result:** 38 Hardhat tests passed. `npm run build:web` also completed TypeScript project checks and a Vite production build. These checks do not prove a Sepolia deployment or a browser MetaMask integration. See [docs/TESTING.md](./docs/TESTING.md) for each case and its result.
 
 ## 12. Limitations and future work
 
@@ -152,12 +177,14 @@ AmataSettle demonstrates a bounded way to connect station-signed delivery record
 4. Solidity documentation. **Solidity language and security considerations.** https://docs.soliditylang.org/
 5. Mozilla Developer Network. **IndexedDB API.** https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
 
-## Appendix A: Evidence placeholders
+## Appendix A: Evidence
 
-- Sepolia contract addresses: **pending actual deployment**
-- Sepolia transaction hashes: **pending actual deployment**
-- Deployment/dashboard screenshots: **pending actual deployment and interaction**
-- Local test output: 25 passing (see `npm test`)
+- Sepolia contract addresses: [`0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6`](https://sepolia.etherscan.io/address/0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6) (AmataSettle) and [`0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f`](https://sepolia.etherscan.io/address/0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f) (MockRWF), recorded in `deployments/sepolia.json`.
+- Sepolia deployment transaction hashes: [`0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5`](https://sepolia.etherscan.io/tx/0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5) (MockRWF) and [`0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f`](https://sepolia.etherscan.io/tx/0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f) (AmataSettle).
+- Deployment/dashboard screenshots: `screenshots/01-sepolia-deployment.png`, `screenshots/02-treasury-dashboard.png`, `screenshots/03-farmer-payments.png`, `screenshots/04-emergency-pause.png`, `screenshots/05-tests-passing.png`, and `screenshots/contract.png`.
+- Local test output: **38 passing** (see `npm test`)
 - Local end-to-end output: generated by `npm run demo:local`; clearly label as Hardhat local
+- `REPORT.pdf`: generated in repository root.
+- `AmataSettle_Presentation.pptx`: generated in repository root.
 
-Do not submit placeholder fields as completed deployment evidence.
+Do not claim screenshots exist unless the files are present in the repository.

@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "network": "sepolia",
+    "chainId": 11155111,
+    "deployedAt": "2026-11-23T12:25:02.624Z",
+    "deployer": "0x55D23cA45Eace7E4497C780f89eac62f61421B3E",
+    "mockRwf": "0x96db7708B29Ff274DA4672B10a2C1D873E8e2a8f",
+    "amataSettle": "0x21ffE6b376cF3BCBae2326e12967d40BA3a5d9B6",
+    "disputePeriodSeconds": 604800,
+    "transactionHashes": {
+      "mockRwf": "0x6cec7761b36de64fef9153807eeb0d4cb1b97e730ad4eeec0956a90f198ce6a5",
+      "amataSettle": "0x82f92708bdd0138e3de02eb441aeaa119ca31da24493a24eeef408c0202d045f"
+    }
+  }
+]
