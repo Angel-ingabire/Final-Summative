@@ -41,14 +41,14 @@ Read [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md). Deployment requires your own Se
 
 ## Documentation
 
-- [Project report](./REPORT.md) and [PDF report](./REPORT.pdf) **pending deliverable** — referenced but not yet generated.
+- [Project report](./REPORT.md) and [PDF report](./REPORT.pdf)
 - [Deployment guide](./docs/DEPLOYMENT.md)
 - [Testing and results](./docs/TESTING.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Security notes](./docs/SECURITY.md)
 - [Demonstration walkthrough](./docs/DEMONSTRATION.md)
 - [Oral defense guide](./docs/ORAL_DEFENSE.md)
-- [Presentation](./AmataSettle_Presentation.pptx) **pending deliverable** — referenced but not yet generated.
+- [Presentation](./AmataSettle_Presentation.pptx)
 
 ## Mission
 

@@ -11,8 +11,6 @@
     "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
     "setup:sepolia": "hardhat run scripts/setup.js --network sepolia",
     "demo:local": "hardhat run scripts/demo-local.js",
-    "report:pdf": "python scripts/generate_report_pdf.py",
-    "presentation": "node scripts/generate_presentation.js",
     "build:web": "npm --prefix frontend run build",
     "dev:web": "npm --prefix frontend run dev"
   },
@@ -26,7 +24,6 @@
     "@nomicfoundation/hardhat-mocha": "^4.0.1",
     "chai": "^5.3.3",
     "hardhat": "^3.22.0",
-    "mocha": "^12.0.0",
-    "pptxgenjs": "^4.0.1"
+    "mocha": "^12.0.0"
   }
 }
